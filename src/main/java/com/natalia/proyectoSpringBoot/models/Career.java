@@ -1,40 +1,68 @@
 package com.natalia.proyectoSpringBoot.models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
+import lombok.ToString;
+//import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.List;
 
 @Data
 @Entity
 @Table(name = "career")
+@ToString(exclude = {"nameCareer"})
 public class Career {
     @Id
-    @Column(columnDefinition="VARCHAR(15)")
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long idCareer;
-
     @Column(name = "nameCareer", unique=true)
     private String nameCareer;
 
-    /*@OneToOne
-    private User user;
-    */
+    @OneToMany(mappedBy="career")
+    //@JsonManagedReference
+    private List<User> users;
 
     @OneToMany(mappedBy="career")
-    private Set<User> users;
+    private List<Course> courses;
 
-    @OneToMany(mappedBy="career")
-    private Set<Course> courses;
-
-    /*@OneToMany
-    @JoinColumn(name = "career_id")
-    private Set<Course> course = new HashSet<>();
- */
-    //Constructor
-    public Career (String nameCareer){
+    public Career(String nameCareer){
         this.nameCareer = nameCareer;
     }
+    public Career() {
+    }
+
+    @JsonManagedReference(value = "user-career")
+    //@JsonManagedReference
+    public List<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<User> users) {
+        this.users = users;
+    }
+
+    @JsonManagedReference(value = "course-career")
+    //@JsonManagedReference
+    public List<Course> getCourses() {
+        return courses;
+    }
+
+    public void setCourses(List<Course> courses) {
+        this.courses = courses;
+    }
+
+    /*@JsonManagedReference(value = "user-career")
+    public Set<User> getUsers() {
+        return users;
+    }*/
+
+    /*@JsonManagedReference(value = "course-career")
+    public Set<Course> getCourse() {
+        return courses;
+    }*/
 
 
 }
