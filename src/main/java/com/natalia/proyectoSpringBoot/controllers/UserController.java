@@ -1,4 +1,4 @@
-package controllers;
+package com.natalia.proyectoSpringBoot.controllers;
 
 import com.natalia.proyectoSpringBoot.models.User;
 import com.natalia.proyectoSpringBoot.services.UserService;
