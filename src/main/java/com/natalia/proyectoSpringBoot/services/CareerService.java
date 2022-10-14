@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class CareerService {
+public class CareerService implements ICareerService{
     private final ICareerRepository icareerRepository;
 
     public CareerService(ICareerRepository icareerRepository) {

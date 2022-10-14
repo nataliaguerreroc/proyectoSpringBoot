@@ -1,5 +1,7 @@
 package com.natalia.proyectoSpringBoot.services;
 
+import com.natalia.proyectoSpringBoot.dto.CourseDTO;
+import com.natalia.proyectoSpringBoot.exceptions.CourseNotRegistered;
 import com.natalia.proyectoSpringBoot.models.Career;
 import com.natalia.proyectoSpringBoot.models.Course;
 import com.natalia.proyectoSpringBoot.models.User;
@@ -7,10 +9,12 @@ import com.natalia.proyectoSpringBoot.repositories.ICareerRepository;
 import com.natalia.proyectoSpringBoot.repositories.ICourseRepository;
 import org.springframework.stereotype.Service;
 
+import javax.xml.bind.ValidationException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
-public class CourseService {
+public class CourseService implements ICourseService {
     private final ICourseRepository icourseRepository;
     private final ICareerRepository icareerRepository;
 
@@ -25,17 +29,18 @@ public class CourseService {
         return courses;
     }
 
-    public List <Map<String, String>> getCoursesInfo(){
-        List <Map<String, String>> jsons = new ArrayList<Map<String, String>>();
+    public List<CourseDTO> getCoursesInfo() {
+        List <Course> data = icourseRepository.getCoursesInfo();
 
-        this.icourseRepository.getCoursesInfo().stream().forEach(o ->{
-            Map<String, String> map = new HashMap<>();
-            map.put("Name", o.getName());
-            map.put("Career",o.getCareer() == null ? "null career": (o.getCareer().getNameCareer().length() > 0 ?o.getCareer().getNameCareer(): "null career"));
-            jsons.add(map);
-        });
-
-        return jsons;
+        List<CourseDTO> courseTempList = data.stream()
+                .map(o ->{
+                    CourseDTO dto = new CourseDTO();
+                    dto.setName(o.getName());
+                    dto.setCareer(o.getCareer());
+                    return dto;
+                })
+                .collect(Collectors.toList());
+        return courseTempList;
     }
 
     public Course add(String name, String nameCareer){
@@ -65,36 +70,35 @@ public class CourseService {
         this.icourseRepository.deleteById(idCourse);
     }
 
-    public void updateByName(String name, String newName, String nameCareer){
-        List<Course> courses = this.icourseRepository.findByName(name);
-        if(courses.size() > 0){
-            Course o = courses.get(0);
-            o.setName(newName);
-            List<Career> careers = this.icareerRepository.findByName(nameCareer);
-            if(careers.size() > 0){
-                Career c = careers.get(0);
-                o.setCareer(c);
+    public void updateByName(String name, String newName, String nameCareer) {
+            List<Course> courses = this.icourseRepository.findByName(name);
+            if (courses.size() > 0) {
+                Course o = courses.get(0);
+                o.setName(newName);
+                List<Career> careers = this.icareerRepository.findByName(nameCareer);
+                if (careers.size() > 0) {
+                    Career c = careers.get(0);
+                    o.setCareer(c);
+                }
+                this.icourseRepository.save(o);
+                System.out.println("User updated JSON body");
             }
-            this.icourseRepository.save(o);
-            System.out.println("User updated JSON body");
-        }
     }
 
-    public Course updateById(Course course, Long idCourse){
-        Optional<Course> optionalCourse = this.icourseRepository.findById(idCourse);
-        Course oldCourse = null;
-        if(optionalCourse.isPresent()){
-            oldCourse = optionalCourse.get();
-            oldCourse.setName(course.getName());
-            List<Career> career = this.icareerRepository.findByName(course.getCareer().getNameCareer());
-            if(career.size() > 0){
-                Career d = career.get(0);
-                oldCourse.setCareer(d);
-            }
-            oldCourse = this.icourseRepository.save(oldCourse);
-        }
-        return oldCourse;
+    public Course updateById(Course course, Long idCourse) {
+            Optional<Course> optionalCourse = this.icourseRepository.findById(idCourse);
+            Course oldCourse = null;
+            //if (optionalCourse.isPresent()) {
+                oldCourse = optionalCourse.orElseThrow( () -> new CourseNotRegistered(idCourse));
+                oldCourse.setName(course.getName());
+                List<Career> career = this.icareerRepository.findByName(course.getCareer().getNameCareer());
+                if (career.size() > 0) {
+                    Career d = career.get(0);
+                    oldCourse.setCareer(d);
+                }
+                oldCourse = this.icourseRepository.save(oldCourse);
+            //}
+            return oldCourse;
     }
-
 
 }

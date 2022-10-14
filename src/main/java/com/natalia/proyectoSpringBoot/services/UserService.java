@@ -1,5 +1,6 @@
 package com.natalia.proyectoSpringBoot.services;
 
+import com.natalia.proyectoSpringBoot.dto.UserDTO;
 import com.natalia.proyectoSpringBoot.models.Career;
 import com.natalia.proyectoSpringBoot.models.User;
 import com.natalia.proyectoSpringBoot.repositories.ICareerRepository;
@@ -10,7 +11,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class UserService {
+public class UserService implements IUserService {
     private final IUserRepository iuserRepository;
     private final ICareerRepository icareerRepository;
 
@@ -25,7 +26,7 @@ public class UserService {
         return users;
     }
 
-    public List <Map<String, String>> getUsersInfo(){
+    /*public List <Map<String, String>> getUsersInfo(){
         List <Map<String, String>> jsons = new ArrayList<Map<String, String>>();
 
         this.iuserRepository.getUsersInfo().stream().forEach(u ->{
@@ -38,7 +39,24 @@ public class UserService {
         });
 
         return jsons;
+    }*/
+
+    public List<UserDTO> getUsersInfo(){
+        List<User> data = iuserRepository.getUsersInfo();
+
+        List<UserDTO> userTempList = data.stream()
+                .map(u ->{
+                    UserDTO dto = new UserDTO();
+                    dto.setName(u.getName());
+                    dto.setEmail(u.getEmail());
+                    dto.setPassword(u.getPassword());
+                    dto.setCareer(u.getCareer());
+                    return dto;
+                })
+                .collect(Collectors.toList());
+        return userTempList;
     }
+
 
     public User add(String name, String email, String password, String nameCareer){
         User users = new User(name, email, password);
@@ -101,24 +119,5 @@ public class UserService {
         }
         return oldUser;
     }
-
-    /*public User updateById(String newName, String newEmail, String newPassword, String nameCareer, Long idUser){
-        Optional<User> userOptional = this.iuserRepository.findById(idUser);
-        User user = null;
-        if(userOptional.isPresent()){
-            user = userOptional.get();
-            user.setName(newName);
-            user.setEmail(newEmail);
-            user.setPassword(newPassword);
-            List<Career> careers = this.icareerRepository.findByName(nameCareer);
-            if(careers.size() > 0){
-                Career c = careers.get(0);
-                user.setCareer(c);
-            }
-            user = this.iuserRepository.save(user);
-
-        }
-        return user;
-    }*/
 
 }

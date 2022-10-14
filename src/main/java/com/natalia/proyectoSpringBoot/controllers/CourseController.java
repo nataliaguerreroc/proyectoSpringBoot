@@ -1,8 +1,9 @@
 package com.natalia.proyectoSpringBoot.controllers;
 
+import com.natalia.proyectoSpringBoot.dto.CourseDTO;
 import com.natalia.proyectoSpringBoot.models.Course;
-import com.natalia.proyectoSpringBoot.models.User;
-import com.natalia.proyectoSpringBoot.services.CourseService;
+import com.natalia.proyectoSpringBoot.services.ICourseService;
+import net.bytebuddy.implementation.bytecode.Throw;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,35 +12,35 @@ import java.util.Map;
 
 @RestController
 public class CourseController {
-    private final CourseService courseService;
+    private final ICourseService icourseService;
 
-    public CourseController(CourseService courseService){
-        this.courseService = courseService;
+    public CourseController(ICourseService icourseService){
+        this.icourseService = icourseService;
     }
 
     @GetMapping("/courses")
     public List<Course> getCourses(){
-        return this.courseService.getCourses();
+        return this.icourseService.getCourses();
     }
 
     @GetMapping("/courses/info")
-    public List <Map<String, String>> getCoursesInfo(){
-        return this.courseService.getCoursesInfo();
+    public List <CourseDTO> getCoursesInfo(){
+        return this.icourseService.getCoursesInfo();
     }
 
     @PostMapping(value = "/courses", consumes = MediaType.APPLICATION_JSON_VALUE)
     public Course createCourse(@RequestBody Map<String, String> json){
-        return this.courseService.add(json.get("name"), json.get("career"));
+        return this.icourseService.add(json.get("name"), json.get("career"));
     }
 
     @PutMapping(value = "/courses/{idCourse}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public Course updateCourse(@RequestBody Course course, @PathVariable Long idCourse){
-        return this.courseService.updateById(course, idCourse);
+            return this.icourseService.updateById(course, idCourse);
     }
 
     @DeleteMapping(value = "/courses/{idCourse}")
     public void deleteCourse(@PathVariable Long idCourse){
-        this.courseService.deleteById(idCourse);
+        this.icourseService.deleteById(idCourse);
     }
 
 }
