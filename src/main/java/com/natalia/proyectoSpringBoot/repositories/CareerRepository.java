@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface CareerRepositoryImpl extends CrudRepository<Career, Long> {
+public interface CareerRepository extends CrudRepository<Career, Long> {
     @Query("SELECT nameCareer from Career")//si no se le pone nativeQuery en true se esta usando JPQL
     List<String> getNames();
 

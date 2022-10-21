@@ -1,42 +1,43 @@
 package com.natalia.proyectoSpringBoot.controllers;
 
 import com.natalia.proyectoSpringBoot.models.Career;
-import com.natalia.proyectoSpringBoot.services.CareerServiceImpl;
+import com.natalia.proyectoSpringBoot.services.CareerService;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@RequestMapping("/careers")
 public class CareerController {
-    private final CareerServiceImpl careerServiceImpl;
+    private final CareerService careerService;
 
-    public CareerController(CareerServiceImpl careerServiceImpl){
-        this.careerServiceImpl = careerServiceImpl;
+    public CareerController(CareerService careerService){
+        this.careerService = careerService;
     }
 
-    @GetMapping("/careers")
+    @GetMapping()
     public List<Career> getCareers(){
-        return this.careerServiceImpl.getCareers();
+        return this.careerService.getCareers();
     }
 
-    @GetMapping("/careers/nameCareers")
+    @GetMapping("/{nameCareers}")
     public List<String> getCareersNames(){
-        return this.careerServiceImpl.getNames();
+        return this.careerService.getNames();
     }
 
-    @PostMapping(value = "/careers", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = {""}, consumes = MediaType.APPLICATION_JSON_VALUE)
     public Career createCareer(@RequestBody Career career){
-        return this.careerServiceImpl.add(career);
+        return this.careerService.add(career);
     }
 
-    @PutMapping(value = "/careers/{idCareer}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/{idCareer}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public Career updateCareer(@RequestBody Career career,@PathVariable Long idCareer){
-        return this.careerServiceImpl.updateById(career,idCareer);
+        return this.careerService.updateById(career,idCareer);
     }
 
-    @DeleteMapping(value = "/careers/{idCareer}")
+    @DeleteMapping(value = "/{idCareer}")
     public void deleteCareer(@PathVariable Long idCareer){
-        this.careerServiceImpl.deleteById(idCareer);
+        this.careerService.deleteById(idCareer);
     }
 }

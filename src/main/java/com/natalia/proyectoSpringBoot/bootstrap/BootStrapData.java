@@ -6,15 +6,15 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class BootStrapData implements CommandLineRunner {
-    private final CareerRepositoryImpl careerRepositoryImpl;
-    private final CourseRepositoryImpl courseRepositoryImpl;
-    private final UserRepositoryImpl userRepositoryImpl;
+    private final CareerRepository careerRepository;
+    private final CourseRepository courseRepository;
+    private final UserRepository userRepository;
 
 
-    public BootStrapData(CareerRepositoryImpl careerRepositoryImpl, CourseRepositoryImpl courseRepositoryImpl, UserRepositoryImpl userRepositoryImpl){
-        this.careerRepositoryImpl = careerRepositoryImpl;
-        this.userRepositoryImpl = userRepositoryImpl;
-        this.courseRepositoryImpl = courseRepositoryImpl;
+    public BootStrapData(CareerRepository careerRepository, CourseRepository courseRepository, UserRepository userRepository){
+        this.careerRepository = careerRepository;
+        this.userRepository = userRepository;
+        this.courseRepository = courseRepository;
     }
 
     @Override
@@ -23,26 +23,26 @@ public class BootStrapData implements CommandLineRunner {
         Career career1 = new Career("Biologia");
         Career career2 = new Career("Ingenieria de Sistemas");
 
-        careerRepositoryImpl.save(career1);
-        careerRepositoryImpl.save(career2);
+        careerRepository.save(career1);
+        careerRepository.save(career2);
 
         Course course1 = new Course("Calculo");
         Course course2 = new Course("Modelado de Sistemas");
         course1.setCareer(career1);
         course2.setCareer(career2);
 
-        courseRepositoryImpl.save(course1);
-        courseRepositoryImpl.save(course2);
+        courseRepository.save(course1);
+        courseRepository.save(course2);
 
-        System.out.println("Total courses: " + courseRepositoryImpl.count());
+        System.out.println("Total courses: " + courseRepository.count());
 
         User user1 = new User("user1", "user1@gmail.com", "pass1");
         User user2 = new User("user2", "user2@gmail.com", "pass2");
         user1.setCareer(career1);
         user2.setCareer(career2);
 
-        userRepositoryImpl.save(user1);
-        userRepositoryImpl.save(user2);
+        userRepository.save(user1);
+        userRepository.save(user2);
 
 
 

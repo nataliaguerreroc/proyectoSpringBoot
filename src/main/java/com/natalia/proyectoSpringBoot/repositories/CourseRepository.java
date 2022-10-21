@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface CourseRepositoryImpl extends CrudRepository <Course, Long> {
+public interface CourseRepository extends CrudRepository <Course, Long> {
     @Query("Select o from Course o left join Career c on c = o.career")
     List<Course> getCoursesInfo();
 

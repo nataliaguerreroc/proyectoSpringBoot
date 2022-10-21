@@ -2,7 +2,7 @@ package com.natalia.proyectoSpringBoot.controllers;
 
 import com.natalia.proyectoSpringBoot.dto.UserDTO;
 import com.natalia.proyectoSpringBoot.models.User;
-import com.natalia.proyectoSpringBoot.services.UserServiceImpl;
+import com.natalia.proyectoSpringBoot.services.UserService;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,36 +10,37 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
+@RequestMapping("/users")
 public class UserController {
-    private final UserServiceImpl userServiceImpl;
+    private final UserService userService;
 
-    public UserController(UserServiceImpl userServiceImpl){
-        this.userServiceImpl = userServiceImpl;
+    public UserController(UserService userService){
+        this.userService = userService;
     }
 
-    @GetMapping("/users")
+    @GetMapping()
     public List<User> getUsers(){
-        return this.userServiceImpl.getUsers();
+        return this.userService.getUsers();
     }
 
-    @GetMapping("/users/info")
+    @GetMapping("/{info}")
     public List <UserDTO> getUsersInfo(){
-        return this.userServiceImpl.getUsersInfo();
+        return this.userService.getUsersInfo();
     }
 
-    @PostMapping(value = "/users", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = {""}, consumes = MediaType.APPLICATION_JSON_VALUE)
     public User createUser(@RequestBody Map<String, String> json){
-        return this.userServiceImpl.add(json.get("name"), json.get("email"), json.get("password"), json.get("career"));
+        return this.userService.add(json.get("name"), json.get("email"), json.get("password"), json.get("career"));
     }
 
-    @PutMapping(value = "/users/{idUser}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/{idUser}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public User updateUser(@RequestBody User user, @PathVariable Long idUser){
-        return this.userServiceImpl.updateById(user, idUser);
+        return this.userService.updateById(user, idUser);
     }
 
-    @DeleteMapping(value = "/users/{idUser}")
+    @DeleteMapping(value = "/{idUser}")
     public void deleteUser(@PathVariable Long idUser){
-        this.userServiceImpl.deleteById(idUser);
+        this.userService.deleteById(idUser);
     }
 
 
