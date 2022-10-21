@@ -4,33 +4,34 @@ import com.natalia.proyectoSpringBoot.dto.CourseDTO;
 import com.natalia.proyectoSpringBoot.exceptions.CourseNotRegistered;
 import com.natalia.proyectoSpringBoot.models.Career;
 import com.natalia.proyectoSpringBoot.models.Course;
-import com.natalia.proyectoSpringBoot.models.User;
-import com.natalia.proyectoSpringBoot.repositories.ICareerRepository;
-import com.natalia.proyectoSpringBoot.repositories.ICourseRepository;
+import com.natalia.proyectoSpringBoot.repositories.CareerRepositoryImpl;
+import com.natalia.proyectoSpringBoot.repositories.CourseRepositoryImpl;
 import org.springframework.stereotype.Service;
 
-import javax.xml.bind.ValidationException;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class CourseService implements ICourseService {
-    private final ICourseRepository icourseRepository;
-    private final ICareerRepository icareerRepository;
+public class CourseService implements CourseServiceImpl {
+    private final CourseRepositoryImpl courseRepositoryImpl;
+    private final CareerRepositoryImpl careerRepositoryImpl;
 
-    public CourseService(ICourseRepository icourseRepository, ICareerRepository icareerRepository){
-        this.icourseRepository = icourseRepository;
-        this.icareerRepository = icareerRepository;
+    public CourseService(CourseRepositoryImpl courseRepositoryImpl, CareerRepositoryImpl careerRepositoryImpl){
+        this.courseRepositoryImpl = courseRepositoryImpl;
+        this.careerRepositoryImpl = careerRepositoryImpl;
     }
 
+    // getCourses() only shows all the courses registered and their information, like ID course
     public List<Course> getCourses(){
         List<Course> courses = new ArrayList<>();
-        this.icourseRepository.findAll().forEach(courses::add);
+        this.courseRepositoryImpl.findAll().forEach(courses::add);
         return courses;
     }
 
+    // getCoursesInfo() not only shows the course information, but also shows the career information and the user
+    // enrolled in it
     public List<CourseDTO> getCoursesInfo() {
-        List <Course> data = icourseRepository.getCoursesInfo();
+        List <Course> data = courseRepositoryImpl.getCoursesInfo();
 
         List<CourseDTO> courseTempList = data.stream()
                 .map(o ->{
@@ -45,58 +46,65 @@ public class CourseService implements ICourseService {
 
     public Course add(String name, String nameCareer){
         Course courses = new Course(name);
-        List<Career> career = this.icareerRepository.findByName(nameCareer);
+        List<Career> career = this.careerRepositoryImpl.findByName(nameCareer);
         if (career.size() > 0){
             Career c = career.get(0);
             courses.setCareer(c);
         }
-        courses = this.icourseRepository.save(courses);
+        courses = this.courseRepositoryImpl.save(courses);
         System.out.println("User added JSON body");
         return courses;
 
     }
 
     public void deleteByName(String name){
-        List<Course> courses = this.icourseRepository.findByName(name);
+        List<Course> courses = this.courseRepositoryImpl.findByName(name);
         if (courses.size() > 0){
             Course o = courses.get(0);
-            this.icourseRepository.deleteById(o.getIdCourse());
+            this.courseRepositoryImpl.deleteById(o.getIdCourse());
             System.out.println("User deleted JSON body");
 
         }
     }
 
+
     public void deleteById(Long idCourse){
-        this.icourseRepository.deleteById(idCourse);
+        Optional<Course> optionalCourse = this.courseRepositoryImpl.findById(idCourse);
+        Course oldCourse = null;
+        oldCourse = optionalCourse.orElseThrow( () -> new CourseNotRegistered(idCourse));
+
+        this.courseRepositoryImpl.deleteById(idCourse);
     }
 
+
     public void updateByName(String name, String newName, String nameCareer) {
-            List<Course> courses = this.icourseRepository.findByName(name);
+            List<Course> courses = this.courseRepositoryImpl.findByName(name);
             if (courses.size() > 0) {
                 Course o = courses.get(0);
                 o.setName(newName);
-                List<Career> careers = this.icareerRepository.findByName(nameCareer);
+                List<Career> careers = this.careerRepositoryImpl.findByName(nameCareer);
                 if (careers.size() > 0) {
                     Career c = careers.get(0);
                     o.setCareer(c);
                 }
-                this.icourseRepository.save(o);
+                this.courseRepositoryImpl.save(o);
                 System.out.println("User updated JSON body");
             }
     }
 
     public Course updateById(Course course, Long idCourse) {
-            Optional<Course> optionalCourse = this.icourseRepository.findById(idCourse);
+            Optional<Course> optionalCourse = this.courseRepositoryImpl.findById(idCourse);
             Course oldCourse = null;
             //if (optionalCourse.isPresent()) {
                 oldCourse = optionalCourse.orElseThrow( () -> new CourseNotRegistered(idCourse));
+                //oldCourse = optionalCourse.get();
                 oldCourse.setName(course.getName());
-                List<Career> career = this.icareerRepository.findByName(course.getCareer().getNameCareer());
+                List<Career> career = this.careerRepositoryImpl.findByName(course.getCareer().getNameCareer());
                 if (career.size() > 0) {
                     Career d = career.get(0);
                     oldCourse.setCareer(d);
                 }
-                oldCourse = this.icourseRepository.save(oldCourse);
+                oldCourse = this.courseRepositoryImpl.save(oldCourse);
             //}
             return oldCourse;
     }

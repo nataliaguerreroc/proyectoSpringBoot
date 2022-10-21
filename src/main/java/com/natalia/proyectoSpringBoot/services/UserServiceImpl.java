@@ -4,9 +4,8 @@ import com.natalia.proyectoSpringBoot.dto.UserDTO;
 import com.natalia.proyectoSpringBoot.models.User;
 
 import java.util.List;
-import java.util.Map;
 
-public interface IUserService {
+public interface UserServiceImpl {
     List<User> getUsers();
 
     List <UserDTO> getUsersInfo();

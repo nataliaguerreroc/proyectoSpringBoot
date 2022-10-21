@@ -4,9 +4,8 @@ import com.natalia.proyectoSpringBoot.dto.CourseDTO;
 import com.natalia.proyectoSpringBoot.models.Course;
 
 import java.util.List;
-import java.util.Map;
 
-public interface ICourseService {
+public interface CourseServiceImpl {
     List<Course> getCourses();
 
     List <CourseDTO> getCoursesInfo();

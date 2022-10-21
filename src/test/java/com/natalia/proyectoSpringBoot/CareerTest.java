@@ -3,26 +3,22 @@ package com.natalia.proyectoSpringBoot;
 import com.natalia.proyectoSpringBoot.models.Career;
 import com.natalia.proyectoSpringBoot.models.Course;
 import com.natalia.proyectoSpringBoot.models.User;
-import com.natalia.proyectoSpringBoot.repositories.ICareerRepository;
+import com.natalia.proyectoSpringBoot.repositories.CareerRepositoryImpl;
 import com.natalia.proyectoSpringBoot.services.CareerService;
-import com.natalia.proyectoSpringBoot.services.ICareerService;
-import com.natalia.proyectoSpringBoot.services.UserService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import java.util.List;
 
 public class CareerTest {
 
     @Test
     public void test1(){
-        ICareerRepository icareerRepository = null;
+        CareerRepositoryImpl careerRepositoryImpl = null;
         CareerService careerService = new CareerService(null);
 
         Career career = new Career();
         career.setNameCareer("Biologia");
         career.setIdCareer(2L);
-        icareerRepository.save(career);
+        careerRepositoryImpl.save(career);
 
 
         Assertions.assertEquals(career.getNameCareer(), "Biologia");

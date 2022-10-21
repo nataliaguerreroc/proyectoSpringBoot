@@ -1,28 +1,30 @@
 package com.natalia.proyectoSpringBoot.services;
 
 import com.natalia.proyectoSpringBoot.dto.UserDTO;
+import com.natalia.proyectoSpringBoot.exceptions.UserNotRegistered;
 import com.natalia.proyectoSpringBoot.models.Career;
 import com.natalia.proyectoSpringBoot.models.User;
-import com.natalia.proyectoSpringBoot.repositories.ICareerRepository;
-import com.natalia.proyectoSpringBoot.repositories.IUserRepository;
+import com.natalia.proyectoSpringBoot.repositories.CareerRepositoryImpl;
+import com.natalia.proyectoSpringBoot.repositories.UserRepositoryImpl;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class UserService implements IUserService {
-    private final IUserRepository iuserRepository;
-    private final ICareerRepository icareerRepository;
+public class UserService implements UserServiceImpl {
+    private final UserRepositoryImpl userRepositoryImpl;
+    private final CareerRepositoryImpl careerRepositoryImpl;
 
-    public UserService(IUserRepository iuserRepository, ICareerRepository icareerRepository){
-        this.iuserRepository = iuserRepository;
-        this.icareerRepository = icareerRepository;
+    public UserService(UserRepositoryImpl userRepositoryImpl, CareerRepositoryImpl careerRepositoryImpl){
+        this.userRepositoryImpl = userRepositoryImpl;
+        this.careerRepositoryImpl = careerRepositoryImpl;
     }
 
+    //getUsers() only shows all the users (students) registered and their information
     public List<User> getUsers(){
         List<User> users = new ArrayList<>();
-        this.iuserRepository.findAll().forEach(users::add);
+        this.userRepositoryImpl.findAll().forEach(users::add);
         return users;
     }
 
@@ -41,8 +43,10 @@ public class UserService implements IUserService {
         return jsons;
     }*/
 
+    //getUsersInfo() not only shows the user information, but also shows the career information
+    // that the user enrolled, this includes information about the courses of the career and the other users enrolled
     public List<UserDTO> getUsersInfo(){
-        List<User> data = iuserRepository.getUsersInfo();
+        List<User> data = userRepositoryImpl.getUsersInfo();
 
         List<UserDTO> userTempList = data.stream()
                 .map(u ->{
@@ -60,63 +64,68 @@ public class UserService implements IUserService {
 
     public User add(String name, String email, String password, String nameCareer){
         User users = new User(name, email, password);
-        List<Career> career = this.icareerRepository.findByName(nameCareer);
+        List<Career> career = this.careerRepositoryImpl.findByName(nameCareer);
         if (career.size() > 0){
             Career c = career.get(0);
             users.setCareer(c);
         }
-        users = this.iuserRepository.save(users);
+        users = this.userRepositoryImpl.save(users);
         System.out.println("User added JSON body");
         return users;
 
     }
 
     public void deleteByName(String name){
-        List<User> users = this.iuserRepository.findByName(name);
+        List<User> users = this.userRepositoryImpl.findByName(name);
         if (users.size() > 0){
             User u = users.get(0);
-            this.iuserRepository.deleteById(u.getIdUser());
+            this.userRepositoryImpl.deleteById(u.getIdUser());
             System.out.println("User deleted JSON body");
 
         }
     }
 
     public void deleteById(Long idUser){
-        this.iuserRepository.deleteById(idUser);
+        Optional<User> optionalUser = this.userRepositoryImpl.findById(idUser);
+        User oldUser = null;
+        oldUser = optionalUser.orElseThrow( () -> new UserNotRegistered(idUser));
+
+        this.userRepositoryImpl.deleteById(idUser);
     }
 
     public void updateByName(String name, String newName, String newEmail,String newPassword, String nameCareer){
-        List<User> users = this.iuserRepository.findByName(name);
+        List<User> users = this.userRepositoryImpl.findByName(name);
         if(users.size() > 0){
             User u = users.get(0);
             u.setName(newName);
             u.setEmail(newEmail);
             u.setPassword(newPassword);
-            List<Career> careers = this.icareerRepository.findByName(nameCareer);
+            List<Career> careers = this.careerRepositoryImpl.findByName(nameCareer);
             if(careers.size() > 0){
                 Career c = careers.get(0);
                 u.setCareer(c);
             }
-            this.iuserRepository.save(u);
+            this.userRepositoryImpl.save(u);
             System.out.println("User updated JSON body");
         }
     }
 
     public User updateById(User user, Long idUser){
-        Optional<User> optionalUser = this.iuserRepository.findById(idUser);
+        Optional<User> optionalUser = this.userRepositoryImpl.findById(idUser);
         User oldUser = null;
-        if(optionalUser.isPresent()){
-            oldUser = optionalUser.get();
+        //if(optionalUser.isPresent()){
+            oldUser = optionalUser.orElseThrow( () -> new UserNotRegistered(idUser));
+            //oldUser = optionalUser.get();
             oldUser.setName(user.getName());
             oldUser.setEmail(user.getEmail());
             oldUser.setPassword(user.getPassword());
-            List<Career> career = this.icareerRepository.findByName(user.getCareer().getNameCareer());
+            List<Career> career = this.careerRepositoryImpl.findByName(user.getCareer().getNameCareer());
             if(career.size() > 0){
                 Career d = career.get(0);
                 oldUser.setCareer(d);
             }
-            oldUser = this.iuserRepository.save(oldUser);
-        }
+            oldUser = this.userRepositoryImpl.save(oldUser);
+        //}
         return oldUser;
     }
 

@@ -6,11 +6,10 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import javax.swing.event.ListDataEvent;
 import java.util.List;
 
 @Repository
-public interface ICareerRepository extends CrudRepository<Career, Long> {
+public interface CareerRepositoryImpl extends CrudRepository<Career, Long> {
     @Query("SELECT nameCareer from Career")//si no se le pone nativeQuery en true se esta usando JPQL
     List<String> getNames();
 

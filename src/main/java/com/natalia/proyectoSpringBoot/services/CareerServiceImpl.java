@@ -4,7 +4,7 @@ import com.natalia.proyectoSpringBoot.models.Career;
 
 import java.util.List;
 
-public interface ICareerService {
+public interface CareerServiceImpl {
     List<String> getNames();
     List<Career> getCareers();
     Career add(Career career);
