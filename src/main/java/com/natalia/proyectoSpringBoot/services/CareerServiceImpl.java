@@ -3,6 +3,7 @@ package com.natalia.proyectoSpringBoot.services;
 import com.natalia.proyectoSpringBoot.exceptions.CareerNotRegistered;
 import com.natalia.proyectoSpringBoot.models.Career;
 import com.natalia.proyectoSpringBoot.repositories.CareerRepository;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -21,6 +22,15 @@ public class CareerServiceImpl implements CareerService {
     // getNames() is used to show all the careers that are registered (only the name of these)
     public List<String> getNames(){
         return this.careerRepository.getNames();
+    }
+
+    // offset:
+    // pageSize: the maximum number of items displayed per page
+
+    public List<Career> getNamesWithPagination(int offset, int pageSize){
+        List<Career> careers = new ArrayList<>();
+        this.careerRepository.findAll(PageRequest.of(offset, pageSize)).forEach(careers::add);
+        return careers;
     }
 
     // getCareers() shows the career information, includes the courses and users information that are enrolled in a career

@@ -7,7 +7,7 @@ public class CareerNotRegistered extends RuntimeException{
         this.idCareer = idCareer;
     }
 
-    public Long getIdCourse(){
+    public Long getIdCareer(){
         return idCareer;
     }
 

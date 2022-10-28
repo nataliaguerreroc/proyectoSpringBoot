@@ -6,6 +6,8 @@ import com.natalia.proyectoSpringBoot.models.Career;
 import com.natalia.proyectoSpringBoot.models.Course;
 import com.natalia.proyectoSpringBoot.repositories.CareerRepository;
 import com.natalia.proyectoSpringBoot.repositories.CourseRepository;
+import com.natalia.proyectoSpringBoot.repositories.TopicRepository;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -16,6 +18,7 @@ public class CourseServiceImpl implements CourseService {
     private final CourseRepository courseRepository;
     private final CareerRepository careerRepository;
 
+
     public CourseServiceImpl(CourseRepository courseRepository, CareerRepository careerRepository){
         this.courseRepository = courseRepository;
         this.careerRepository = careerRepository;
@@ -25,6 +28,12 @@ public class CourseServiceImpl implements CourseService {
     public List<Course> getCourses(){
         List<Course> courses = new ArrayList<>();
         this.courseRepository.findAll().forEach(courses::add);
+        return courses;
+    }
+
+    public List<Course> getCourseWithPagination(int offset, int pageSize){
+        List<Course> courses = new ArrayList<>();
+        this.courseRepository.findAll(PageRequest.of(offset, pageSize)).forEach(courses::add);
         return courses;
     }
 

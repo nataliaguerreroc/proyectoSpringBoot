@@ -16,7 +16,7 @@ public class RestResponseExceptionHandler {
     @ResponseBody
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ExceptionMessage courseNotRegisteredException(CourseNotRegistered courseNotRegistered){
-        String errorMessage = "No se encontró el curso";
+        String errorMessage = "Course not found";
         return new ExceptionMessage(errorMessage, SeverityError.LOW);
     }
 
@@ -24,7 +24,7 @@ public class RestResponseExceptionHandler {
     @ResponseBody
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ExceptionMessage careerNotRegisteredException(CareerNotRegistered careerNotRegistered){
-        String errorMessage = "No se encontró la carrera";
+        String errorMessage = "Career not found";
         return new ExceptionMessage(errorMessage, SeverityError.MEDIUM);
     }
 
@@ -32,8 +32,16 @@ public class RestResponseExceptionHandler {
     @ResponseBody
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ExceptionMessage userNotRegisteredException(UserNotRegistered userNotRegistered){
-        String errorMessage = "No se encontró el usuario";
+        String errorMessage = "User not found";
         return new ExceptionMessage(errorMessage, SeverityError.MEDIUM);
+    }
+
+    @ExceptionHandler(value = {TopicNotRegistered.class})
+    @ResponseBody
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ExceptionMessage topicNotRegisteredException(TopicNotRegistered topicNotRegistered){
+        String errorMessage = "Topic not found";
+        return new ExceptionMessage(errorMessage, SeverityError.LOW);
     }
 
 

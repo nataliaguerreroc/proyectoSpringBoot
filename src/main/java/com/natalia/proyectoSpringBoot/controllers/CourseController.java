@@ -2,6 +2,7 @@ package com.natalia.proyectoSpringBoot.controllers;
 
 import com.natalia.proyectoSpringBoot.dto.CourseDTO;
 import com.natalia.proyectoSpringBoot.models.Course;
+import com.natalia.proyectoSpringBoot.models.User;
 import com.natalia.proyectoSpringBoot.services.CourseService;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -26,6 +27,11 @@ public class CourseController {
     @GetMapping("/{info}")
     public List <CourseDTO> getCoursesInfo(){
         return this.courseService.getCoursesInfo();
+    }
+
+    @GetMapping("/pagination/{offset}/{pageSize}")
+    public List<Course> getCourseWithPagination(@PathVariable int offset, @PathVariable int pageSize){
+        return this.courseService.getCourseWithPagination(offset, pageSize);
     }
 
     @PostMapping(value = {""}, consumes = MediaType.APPLICATION_JSON_VALUE)

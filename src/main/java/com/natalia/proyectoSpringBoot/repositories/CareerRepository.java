@@ -1,15 +1,17 @@
 package com.natalia.proyectoSpringBoot.repositories;
 
 import com.natalia.proyectoSpringBoot.models.Career;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
-public interface CareerRepository extends CrudRepository<Career, Long> {
+public interface CareerRepository extends CrudRepository<Career, Long>, PagingAndSortingRepository<Career, Long> {
     @Query("SELECT nameCareer from Career")//si no se le pone nativeQuery en true se esta usando JPQL
     List<String> getNames();
 

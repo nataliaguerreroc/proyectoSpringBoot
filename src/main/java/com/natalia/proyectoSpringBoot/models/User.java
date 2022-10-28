@@ -2,11 +2,14 @@ package com.natalia.proyectoSpringBoot.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
+import org.springframework.validation.annotation.Validated;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Data
 @Entity
+@Validated
 @Table(name = "student")
 //@ToString(exclude = {"career"})
 public class User {
@@ -14,13 +17,13 @@ public class User {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long idUser;
 
-    @Column(name = "name")
+    @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "email", unique=true)
+    @Column(name = "email", unique=true, nullable = false)
     private String email;
 
-    @Column(name = "password")
+    @Column(name = "password", nullable = false)
     private String password;
 
     @ManyToOne

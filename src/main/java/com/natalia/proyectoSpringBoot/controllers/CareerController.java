@@ -21,6 +21,11 @@ public class CareerController {
         return this.careerService.getCareers();
     }
 
+    @GetMapping("/pagination/{offset}/{pageSize}")
+    public List<Career> getNamesWithPagination(@PathVariable int offset, @PathVariable int pageSize){
+        return this.careerService.getNamesWithPagination(offset, pageSize);
+    }
+
     @GetMapping("/{nameCareers}")
     public List<String> getCareersNames(){
         return this.careerService.getNames();

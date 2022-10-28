@@ -6,6 +6,7 @@ import java.util.List;
 
 public interface CareerService {
     List<String> getNames();
+    List<Career> getNamesWithPagination(int offset, int pageSize);
     List<Career> getCareers();
     Career add(Career career);
     void deleteByName(String nameCareer);

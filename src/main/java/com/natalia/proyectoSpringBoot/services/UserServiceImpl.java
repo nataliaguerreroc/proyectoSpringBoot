@@ -6,6 +6,7 @@ import com.natalia.proyectoSpringBoot.models.Career;
 import com.natalia.proyectoSpringBoot.models.User;
 import com.natalia.proyectoSpringBoot.repositories.CareerRepository;
 import com.natalia.proyectoSpringBoot.repositories.UserRepository;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -21,27 +22,18 @@ public class UserServiceImpl implements UserService {
         this.careerRepository = careerRepository;
     }
 
+    public List<User> getUsersWithPagination(int offset, int pageSize){
+        List<User> users = new ArrayList<>();
+        this.userRepository.findAll(PageRequest.of(offset, pageSize)).forEach(users::add);
+        return users;
+    }
+
     //getUsers() only shows all the users (students) registered and their information
     public List<User> getUsers(){
         List<User> users = new ArrayList<>();
         this.userRepository.findAll().forEach(users::add);
         return users;
     }
-
-    /*public List <Map<String, String>> getUsersInfo(){
-        List <Map<String, String>> jsons = new ArrayList<Map<String, String>>();
-
-        this.iuserRepository.getUsersInfo().stream().forEach(u ->{
-            Map<String, String> map = new HashMap<>();
-            map.put("Name", u.getName());
-            map.put("Email", u.getEmail());
-            map.put("Password", u.getPassword());
-            map.put("Career",u.getCareer() == null ? "null career": (u.getCareer().getNameCareer().length() > 0 ?u.getCareer().getNameCareer(): "null career"));
-            jsons.add(map);
-        });
-
-        return jsons;
-    }*/
 
     //getUsersInfo() not only shows the user information, but also shows the career information
     // that the user enrolled, this includes information about the courses of the career and the other users enrolled
